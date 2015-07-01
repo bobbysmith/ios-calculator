@@ -15,8 +15,10 @@ class ViewController: UIViewController {
     // var display is a property(instance variable) that points to the object that it is connected to -- var name: Type!
     @IBOutlet weak var display: UILabel!
     
-    var userTypingNumber: Bool = false
+    //dont need to infer type because it is obvious with bool
+    var userTypingNumber = false
     
+
     // action create a method
     // func name(argName: argType)
     @IBAction func appendDigit(sender: UIButton) {
@@ -32,5 +34,48 @@ class ViewController: UIViewController {
         }
         println("digit = \(digit)")
     }
+    
+    @IBAction func operate(sender: UIButton) {
+        let operation = sender.currentTitle!
+        if userTypingNumber {
+            enter()
+        }
+        switch operation {
+            // $0 and $1 etc are swifts default naming if names arent given
+            case "×": performOperation({$0 * $1})
+            case "÷": performOperation({$0 / $1})
+            case "+": performOperation({$0 + $1})
+            case "−": performOperation({$0 - $1})
+            default: break
+        }
+    }
+    
+    func performOperation(operation: (Double, Double) -> Double) {
+        if operandStack.count >= 2 {
+            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+            enter()
+        }
+    }
+    
+    
+    // array for number stack to be calculated, initaized to empty array
+    var operandStack = Array<Double>()
+    
+    @IBAction func enter() {
+        userTypingNumber = false
+        operandStack.append(displayValue)
+        println("Stack is \(operandStack)")
+    }
+    
+    // convert display text to double
+    var displayValue: Double {
+        get {
+            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+        }
+        set {
+            display.text = "\(newValue)"
+        }
+    }
+    
 }
 
