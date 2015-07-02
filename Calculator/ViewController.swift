@@ -43,9 +43,10 @@ class ViewController: UIViewController {
         switch operation {
             // $0 and $1 etc are swifts default naming if names arent given
             case "×": performOperation({$0 * $1})
-            case "÷": performOperation({$0 / $1})
+            case "÷": performOperation({$1 / $0})
             case "+": performOperation({$0 + $1})
-            case "−": performOperation({$0 - $1})
+            case "−": performOperation({$1 - $0})
+            case "√": squareRoot({sqrt($0)})
             default: break
         }
     }
@@ -53,6 +54,13 @@ class ViewController: UIViewController {
     func performOperation(operation: (Double, Double) -> Double) {
         if operandStack.count >= 2 {
             displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+            enter()
+        }
+    }
+    
+    func squareRoot(operation: Double -> Double) {
+        if operandStack.count >= 1 {
+            displayValue = operation(operandStack.removeLast())
             enter()
         }
     }
